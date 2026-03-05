@@ -3,7 +3,8 @@
 import { Proposal } from "@/types";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Check, Edit3, X, Download } from "lucide-react";
+import { Check, Edit3, X, Download, Loader2 } from "lucide-react";
+import { useState } from "react";
 import ProposalActions from "@/components/public/ProposalActions";
 
 interface ProposalViewProps {
@@ -11,6 +12,8 @@ interface ProposalViewProps {
 }
 
 export default function ProposalView({ proposal }: ProposalViewProps) {
+  const [isDownloading, setIsDownloading] = useState(false);
+
   const isExpired =
     proposal.status === "sent" &&
     proposal.valid_until &&
@@ -19,6 +22,29 @@ export default function ProposalView({ proposal }: ProposalViewProps) {
   const isResponded = ["accepted", "changes_requested", "rejected"].includes(
     proposal.status,
   );
+
+  const handleDownload = async () => {
+    setIsDownloading(true);
+    try {
+      const response = await fetch(`/api/proposals/${proposal.id}/pdf`);
+      if (!response.ok) throw new Error("Failed to generate PDF");
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `propuesta-${proposal.slug}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error("Download error:", error);
+      alert("Error al descargar el PDF. Por favor intenta de nuevo.");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   const formatDate = (dateStr?: string) => {
     if (!dateStr) return "-";
@@ -281,9 +307,16 @@ export default function ProposalView({ proposal }: ProposalViewProps) {
       {!isResponded && <ProposalActions proposal={proposal} />}
 
       {/* Floating Button */}
-      <button className="fixed bottom-8 right-8 bg-black text-white flex items-center gap-3 px-6 py-4 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all z-40 font-medium">
-        <Download className="w-5 h-5" />
-        Descargar PDF
+      <button
+        onClick={handleDownload}
+        disabled={isDownloading}
+        className="fixed bottom-8 right-8 bg-black text-white flex items-center gap-3 px-6 py-4 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all z-40 font-medium disabled:opacity-50">
+        {isDownloading ? (
+          <Loader2 className="w-5 h-5 animate-spin" />
+        ) : (
+          <Download className="w-5 h-5" />
+        )}
+        {isDownloading ? "Generando..." : "Descargar PDF"}
       </button>
     </div>
   );

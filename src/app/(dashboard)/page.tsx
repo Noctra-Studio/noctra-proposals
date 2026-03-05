@@ -12,6 +12,7 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Proposal } from "@/types";
+import { ProposalRowActions } from "@/components/dashboard/ProposalRowActions";
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
@@ -247,22 +248,11 @@ export default async function DashboardPage({
                         : "N/A"}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Link
-                          href={`/p/${proposal.slug}`}
-                          target="_blank"
-                          className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]">
-                          Ver
-                        </Link>
-                        <Link
-                          href={`/proposals/${proposal.id}`}
-                          className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]">
-                          Editar
-                        </Link>
-                        <button className="text-sm text-[var(--color-accent)] hover:text-[#d4eb3d] font-medium">
-                          Enviar
-                        </button>
-                      </div>
+                      <ProposalRowActions
+                        proposalId={proposal.id}
+                        slug={proposal.slug}
+                        status={proposal.status}
+                      />
                     </td>
                   </tr>
                 ))
