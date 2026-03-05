@@ -1,0 +1,1 @@
+export default function PdfGen() { return null; }
