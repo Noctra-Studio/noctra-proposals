@@ -85,6 +85,7 @@ export default function NewProposalWizard() {
       const payload = {
         slug,
         status,
+        language: state.language,
         client_name: state.client_name,
         client_email: state.client_email,
         client_company: state.client_company,
@@ -214,6 +215,24 @@ export default function NewProposalWizard() {
                   className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg bg-[var(--color-surface-elevated)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)]"
                   placeholder="Ej: John Doe"
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-1">
+                  Idioma de la Propuesta *
+                </label>
+                <select
+                  value={state.language}
+                  onChange={(e) =>
+                    dispatch({
+                      type: "UPDATE_FIELD",
+                      field: "language",
+                      value: e.target.value as "en" | "es",
+                    })
+                  }
+                  className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg bg-[var(--color-surface-elevated)] text-[var(--color-text-primary)] focus:outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)]">
+                  <option value="es">Español</option>
+                  <option value="en">Inglés</option>
+                </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-1">
@@ -814,7 +833,7 @@ export default function NewProposalWizard() {
                 <button
                   onClick={() => handleSave("sent")}
                   disabled={state.isSubmitting}
-                  className="flex items-center justify-center gap-2 py-3 px-4 bg-[var(--color-accent)] text-black rounded-lg hover:bg-[#d4eb3d] transition-colors font-medium shadow-sm disabled:opacity-50">
+                  className="flex items-center justify-center gap-2 py-3 px-4 bg-[var(--color-accent)] text-black rounded-lg hover:bg-[#e5e5e5] transition-colors font-medium shadow-sm disabled:opacity-50">
                   {state.isSubmitting ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
                   ) : (
@@ -842,7 +861,7 @@ export default function NewProposalWizard() {
         <button
           onClick={() => dispatch({ type: "NEXT_STEP" })}
           disabled={state.currentStep === 5 || !validateCurrentStep()}
-          className="flex items-center gap-2 px-6 py-2 rounded-lg font-medium text-sm text-black bg-[var(--color-accent)] hover:bg-[#d4eb3d] border border-transparent disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+          className="flex items-center gap-2 px-6 py-2 rounded-lg font-medium text-sm text-black bg-[var(--color-accent)] hover:bg-[#e5e5e5] border border-transparent disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
           Siguiente <ArrowRight className="w-4 h-4" />
         </button>
       </div>

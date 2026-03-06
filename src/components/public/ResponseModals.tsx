@@ -52,7 +52,7 @@ export function AcceptModal({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Escribe tu nombre para confirmar"
-              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#E8FF47] focus:border-transparent transition-all"
+              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
               required
             />
           </div>
@@ -60,7 +60,7 @@ export function AcceptModal({
           <button
             onClick={() => onConfirm({ client_signed_name: name })}
             disabled={loading || !name.trim()}
-            className="w-full bg-[#E8FF47] text-black font-bold py-5 rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-2">
+            className="w-full bg-white text-black border border-gray-200 font-bold py-5 rounded-2xl hover:bg-gray-50 active:scale-[0.98] transition-all disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-2">
             {loading ? (
               <Loader2 className="w-5 h-5 animate-spin" />
             ) : (

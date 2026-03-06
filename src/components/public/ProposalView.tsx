@@ -138,7 +138,7 @@ export default function ProposalView({ proposal }: ProposalViewProps) {
           </p>
         </div>
         <div className="text-right md:pt-2">
-          <div className="mb-4 text-sm font-medium uppercase tracking-widest text-[#E8FF47] bg-black px-3 py-1 inline-block rounded">
+          <div className="mb-4 text-sm font-medium uppercase tracking-widest text-black bg-white border border-gray-200 px-3 py-1 inline-block rounded">
             {proposal.status === "accepted"
               ? "Aceptada"
               : proposal.status === "rejected"
@@ -230,7 +230,7 @@ export default function ProposalView({ proposal }: ProposalViewProps) {
 
           {proposal.discount_amount && proposal.discount_amount > 0 && (
             <>
-              <div className="flex justify-between text-[#E8FF47]">
+              <div className="flex justify-between text-white">
                 <span>
                   Descuento (
                   {proposal.discount_type === "percentage"
@@ -256,7 +256,7 @@ export default function ProposalView({ proposal }: ProposalViewProps) {
 
           <div className="flex justify-between items-baseline pt-6">
             <span className="text-xl font-medium">TOTAL</span>
-            <span className="text-4xl md:text-5xl font-serif font-bold text-[#E8FF47]">
+            <span className="text-4xl md:text-5xl font-serif font-bold text-white">
               {formatCurrency(proposal.total)}
             </span>
           </div>

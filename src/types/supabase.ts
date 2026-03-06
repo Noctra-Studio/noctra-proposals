@@ -15,6 +15,7 @@ export interface Database {
           proposal_id: string | null
           slug: string
           status: string
+          language: "es" | "en"
           client_name: string
           client_company: string | null
           client_rfc: string | null
@@ -31,6 +32,10 @@ export interface Database {
           estimated_end_date: string
           signed_at: string | null
           client_signed_name: string | null
+          cancellation_fee: number | null
+          cancellation_terms: string | null
+          cancellation_client_name: string | null
+          cancellation_signed_at: string | null
           sent_at: string | null
           created_at: string
           updated_at: string
@@ -40,6 +45,7 @@ export interface Database {
           proposal_id?: string | null
           slug: string
           status?: string
+          language?: "es" | "en"
           client_name: string
           client_company?: string | null
           client_rfc?: string | null
@@ -56,6 +62,10 @@ export interface Database {
           estimated_end_date: string
           signed_at?: string | null
           client_signed_name?: string | null
+          cancellation_fee?: number | null
+          cancellation_terms?: string | null
+          cancellation_client_name?: string | null
+          cancellation_signed_at?: string | null
           sent_at?: string | null
           created_at?: string
           updated_at?: string
@@ -65,6 +75,7 @@ export interface Database {
           proposal_id?: string | null
           slug?: string
           status?: string
+          language?: "es" | "en"
           client_name?: string
           client_company?: string | null
           client_rfc?: string | null
@@ -81,6 +92,10 @@ export interface Database {
           estimated_end_date?: string
           signed_at?: string | null
           client_signed_name?: string | null
+          cancellation_fee?: number | null
+          cancellation_terms?: string | null
+          cancellation_client_name?: string | null
+          cancellation_signed_at?: string | null
           sent_at?: string | null
           created_at?: string
           updated_at?: string

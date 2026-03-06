@@ -74,8 +74,8 @@ export default function ProposalActions({ proposal }: ProposalActionsProps) {
       <div className="grid md:grid-cols-3 gap-6">
         <button
           onClick={() => setActiveModal("accepted")}
-          className="flex flex-col items-center justify-center p-10 bg-[#E8FF47] text-black rounded-3xl group hover:shadow-xl hover:-translate-y-1 transition-all">
-          <div className="w-16 h-16 bg-black/10 rounded-full flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-[#E8FF47] transition-colors">
+          className="flex flex-col items-center justify-center p-10 border border-gray-200 bg-white text-black rounded-3xl group hover:shadow-xl hover:-translate-y-1 transition-all">
+          <div className="w-16 h-16 bg-black/5 rounded-full flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white transition-colors">
             <Check className="w-8 h-8" />
           </div>
           <span className="font-bold text-xl text-center">

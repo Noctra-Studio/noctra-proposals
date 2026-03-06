@@ -20,7 +20,9 @@ import {
   Loader2,
 } from "lucide-react";
 import { format, addWeeks } from "date-fns";
+import { es, enUS } from "date-fns/locale";
 import { formatCurrency } from "@/lib/utils";
+import { legalTexts } from "@/lib/legal-texts";
 
 interface ContractFormProps {
   proposal: Proposal;
@@ -29,6 +31,10 @@ interface ContractFormProps {
 export default function ContractForm({ proposal }: ContractFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const lang = proposal.language || "es";
+  const t = legalTexts[lang].contract;
+  const tGeneral = legalTexts[lang];
+  const dateLocale = lang === "en" ? enUS : es;
 
   // Section 1: Parties
   const [clientInfo, setClientInfo] = useState({
@@ -101,6 +107,7 @@ export default function ContractForm({ proposal }: ContractFormProps) {
     try {
       const contractPayload = {
         proposal_id: proposal.id,
+        language: proposal.language || "es",
         client_name: clientInfo.name,
         client_company: clientInfo.company,
         client_rfc: clientInfo.rfc,
@@ -419,11 +426,11 @@ export default function ContractForm({ proposal }: ContractFormProps) {
         <div className="bg-white border border-gray-100 rounded-[2.5rem] p-10 md:p-14 shadow-2xl min-h-[800px] overflow-y-auto">
           <div className="max-w-prose mx-auto">
             <header className="mb-14 pb-14 border-b border-gray-100">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#E8FF47] bg-black px-3 py-1 inline-block rounded mb-8">
-                Contrato de Servicios
+              <p className="text-xs font-bold uppercase tracking-widest text-white bg-black px-3 py-1 inline-block rounded mb-8">
+                {t.type_label}
               </p>
-              <h1 className="text-4xl font-serif font-medium leading-tight mb-4">
-                CONTRATO DE PRESTACIÓN DE SERVICIOS PROFESIONALES
+              <h1 className="text-4xl font-serif font-medium leading-tight mb-4 uppercase">
+                {t.type_label}
               </h1>
               <p className="text-gray-400 text-sm">
                 #{proposal.slug.split("-").pop()?.toUpperCase()}
@@ -433,26 +440,29 @@ export default function ContractForm({ proposal }: ContractFormProps) {
             <div className="prose prose-sm prose-gray space-y-10 leading-relaxed text-gray-700">
               <section>
                 <p>
-                  Este Contrato de Prestación de Servicios (el "Contrato") se
-                  celebra entre <strong>Noctra Studio</strong> (el "Prestador")
-                  y{" "}
+                  {lang === "en" ? "This " : "Este "}{" "}
+                  <strong>{t.type_label}</strong>{" "}
+                  {lang === "en" ? "is celebrated between" : "se celebra entre"}{" "}
+                  <strong>Noctra Studio</strong> ({t.provider})
+                  {lang === "en" ? " and " : " y "}
                   {clientInfo.company ? (
                     <strong>{clientInfo.company}</strong>
                   ) : (
                     <strong>{clientInfo.name}</strong>
                   )}{" "}
-                  (el "Cliente").
+                  ({t.client}).
                 </p>
               </section>
 
               <section>
                 <h4 className="font-bold text-black uppercase tracking-wider text-xs border-b border-gray-50 pb-2 mb-4">
-                  I. OBJETO DEL CONTRATO
+                  {t.sections.project.title.toUpperCase()}
                 </h4>
                 <p>
-                  El Prestador se compromete a realizar los servicios para el
-                  proyecto: <strong>{proposal.project_name}</strong> que
-                  incluyen:
+                  {t.sections.project.content.replace(
+                    "{project_name}",
+                    proposal.project_name,
+                  )}
                 </p>
                 <ul className="list-disc pl-5 mt-2 space-y-1">
                   {services.map((s: ServiceItem, i: number) => (
@@ -465,12 +475,13 @@ export default function ContractForm({ proposal }: ContractFormProps) {
 
               <section>
                 <h4 className="font-bold text-black uppercase tracking-wider text-xs border-b border-gray-50 pb-2 mb-4">
-                  II. CONTRAPRESTACIÓN Y PAGO
+                  {t.sections.financial.title.toUpperCase()}
                 </h4>
                 <p>
-                  El costo total por los servicios es de{" "}
-                  <strong>{formatCurrency(total)}</strong>, pagaderos en el
-                  siguiente calendario:
+                  {t.sections.financial.content.replace(
+                    "{total}",
+                    formatCurrency(total),
+                  )}
                 </p>
                 <div className="space-y-2 mt-4">
                   {payments.map((p: PaymentScheduleItem, i: number) => (
@@ -486,19 +497,52 @@ export default function ContractForm({ proposal }: ContractFormProps) {
 
               <section>
                 <h4 className="font-bold text-black uppercase tracking-wider text-xs border-b border-gray-50 pb-2 mb-4">
-                  III. PLAZOS DE ENTREGA
+                  {t.sections.timeline.title.toUpperCase()}
                 </h4>
                 <p>
-                  El inicio oficial del proyecto está programado para el{" "}
+                  {t.sections.timeline.content.replace(
+                    "{total_weeks}",
+                    totalWeeks.toString(),
+                  )}
+                </p>
+                <p className="mt-2">
+                  <strong>{t.sections.timeline.start_date}:</strong>{" "}
+                  {format(new Date(startDate), "dd 'de' MMMM, yyyy", {
+                    locale: dateLocale,
+                  })}
+                  <br />
+                  <strong>{t.sections.timeline.end_date}:</strong>{" "}
+                  {format(new Date(endDate), "dd 'de' MMMM, yyyy", {
+                    locale: dateLocale,
+                  })}
+                </p>
+              </section>
+
+              <section className="text-sm border-t border-gray-100 pt-10 space-y-6">
+                <h4 className="font-bold text-black uppercase tracking-wider text-xs border-b border-gray-50 pb-2 mb-4">
+                  {t.sections.legal_terms.title.toUpperCase()}
+                </h4>
+                <p>
+                  <strong>{t.sections.legal_terms.confidentiality}:</strong>{" "}
+                  {t.sections.legal_terms.confidentiality_text}
+                </p>
+                <p>
                   <strong>
-                    {format(new Date(startDate), "dd 'de' MMMM, yyyy")}
-                  </strong>
-                  . La entrega final estimada, incluyendo el periodo de
-                  aseguramiento de calidad, será el{" "}
-                  <strong>
-                    {format(new Date(endDate), "dd 'de' MMMM, yyyy")}
+                    {t.sections.legal_terms.intellectual_property}:
                   </strong>{" "}
-                  ({totalWeeks} semanas).
+                  {t.sections.legal_terms.intellectual_property_text}
+                </p>
+                <p>
+                  <strong>{t.sections.legal_terms.late_payments}:</strong>{" "}
+                  {t.sections.legal_terms.late_payments_text}
+                </p>
+                <p>
+                  <strong>{t.sections.legal_terms.scope_changes}:</strong>{" "}
+                  {t.sections.legal_terms.scope_changes_text}
+                </p>
+                <p>
+                  <strong>{t.sections.legal_terms.liability}:</strong>{" "}
+                  {t.sections.legal_terms.liability_text}
                 </p>
               </section>
 

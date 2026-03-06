@@ -64,7 +64,7 @@ export function ProposalRowActions({
         <button
           onClick={handleSend}
           disabled={sending}
-          className="text-sm text-[var(--color-accent)] hover:text-[#d4eb3d] font-medium flex items-center gap-1 disabled:opacity-50">
+          className="text-sm text-[var(--color-accent)] hover:text-[#e5e5e5] font-medium flex items-center gap-1 disabled:opacity-50">
           {sending ? (
             <Loader2 className="w-3 h-3 animate-spin" />
           ) : (

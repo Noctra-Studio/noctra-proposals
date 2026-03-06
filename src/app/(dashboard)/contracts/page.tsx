@@ -1,36 +1,30 @@
 import { createClient } from "@/lib/supabase/server";
 import {
-  Plus,
   Search,
   Filter,
-  MoreHorizontal,
-  FileText,
+  FileSignature,
   CheckCircle2,
   TrendingUp,
 } from "lucide-react";
 import Link from "next/link";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Proposal } from "@/types";
-import { ProposalRowActions } from "@/components/dashboard/ProposalRowActions";
+import { Contract } from "@/types";
+import { ContractRowActions } from "@/components/dashboard/ContractRowActions";
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
     draft: "bg-gray-500/10 text-gray-400 border-gray-500/20",
     sent: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-    accepted: "bg-green-500/10 text-green-400 border-green-500/20",
-    changes_requested: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
-    rejected: "bg-red-500/10 text-red-400 border-red-500/20",
-    cancelled: "bg-gray-800 text-gray-400 border-gray-700",
+    signed: "bg-green-500/10 text-green-400 border-green-500/20",
+    cancelled: "bg-red-500/10 text-red-400 border-red-500/20",
   };
 
   const labels: Record<string, string> = {
     draft: "Borrador",
-    sent: "Enviada",
-    accepted: "Aceptada",
-    changes_requested: "Cambios solicitados",
-    rejected: "Rechazada",
-    cancelled: "Cancelada",
+    sent: "Enviado",
+    signed: "Firmado",
+    cancelled: "Cancelado",
   };
 
   return (
@@ -79,7 +73,7 @@ function StatCard({
 // Ensure dynamic rendering to fetch fresh data on each page load
 export const dynamic = "force-dynamic";
 
-export default async function DashboardPage({
+export default async function ContractsPage({
   searchParams,
 }: {
   searchParams: Promise<{ status?: string }>;
@@ -89,7 +83,7 @@ export default async function DashboardPage({
 
   // Base query
   let query = supabase
-    .from("proposals")
+    .from("contracts")
     .select("*")
     .order("created_at", { ascending: false });
 
@@ -98,31 +92,31 @@ export default async function DashboardPage({
     query = query.eq("status", status);
   }
 
-  const { data: rawProposals, error } = await query;
-  const proposals = (rawProposals as Proposal[]) || [];
+  const { data: rawContracts, error } = await query;
+  const contracts = (rawContracts as Contract[]) || [];
 
   // Calculate statistics (fetch all to get accurate stats regardless of filter)
-  const { data: allProposalsRaw } = await supabase
-    .from("proposals")
+  const { data: allContractsRaw } = await supabase
+    .from("contracts")
     .select("*");
-  const allProposals = (allProposalsRaw as Proposal[]) || [];
+  const allContracts = (allContractsRaw as Contract[]) || [];
 
-  const totalCount = allProposals.length;
+  const totalCount = allContracts.length;
 
   const currentMonth = new Date().getMonth();
   const currentYear = new Date().getFullYear();
 
-  const acceptedThisMonth = allProposals.filter((p) => {
-    if (p.status !== "accepted" || !p.created_at) return false;
-    const date = new Date(p.created_at);
+  const signedThisMonth = allContracts.filter((c) => {
+    if (c.status !== "signed" || !c.signed_at) return false;
+    const date = new Date(c.signed_at);
     return (
       date.getMonth() === currentMonth && date.getFullYear() === currentYear
     );
   }).length;
 
-  const totalValueAccepted = allProposals
-    .filter((p) => p.status === "accepted")
-    .reduce((acc, p) => acc + (Number(p.total) || 0), 0);
+  const totalValueSigned = allContracts
+    .filter((c) => c.status === "signed")
+    .reduce((acc, c) => acc + (Number(c.total) || 0), 0);
 
   const formatter = new Intl.NumberFormat("es-MX", {
     style: "currency",
@@ -135,39 +129,33 @@ export default async function DashboardPage({
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-[var(--color-text-primary)]">
-            Propuestas
+            Contratos
           </h1>
           <p className="text-[var(--color-text-secondary)] mt-1 text-sm">
-            Gestiona y haz seguimiento a tus propuestas comerciales.
+            Gestiona todos los contratos emitidos a tus clientes.
           </p>
         </div>
-        <Link
-          href="/proposals/new"
-          className="flex items-center gap-2 bg-[var(--color-accent)] text-black px-4 py-2.5 rounded-lg font-medium text-sm hover:bg-[#e5e5e5] transition-colors shadow-sm">
-          <Plus className="w-5 h-5" />
-          Nueva propuesta
-        </Link>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <StatCard
-          title="Total Propuestas"
+          title="Total Contratos"
           value={totalCount.toString()}
-          icon={FileText}
-          description="Histórico completo"
+          icon={FileSignature}
+          description="Contratos emitidos históricamente"
         />
         <StatCard
-          title="Aceptadas este Mes"
-          value={acceptedThisMonth.toString()}
+          title="Firmados este Mes"
+          value={signedThisMonth.toString()}
           icon={CheckCircle2}
           description="Rendimiento del mes actual"
         />
         <StatCard
-          title="Valor Aceptado"
-          value={formatter.format(totalValueAccepted)}
+          title="Valor Firmado"
+          value={formatter.format(totalValueSigned)}
           icon={TrendingUp}
-          description="Ingresos proyectados totales"
+          description="Ingresos asegurados totales"
         />
       </div>
 
@@ -191,10 +179,9 @@ export default async function DashboardPage({
               defaultValue={status || "all"}>
               <option value="all">Todos los estados</option>
               <option value="draft">Borrador</option>
-              <option value="sent">Enviadas</option>
-              <option value="accepted">Aceptadas</option>
-              <option value="changes_requested">Cambios solicitados</option>
-              <option value="rejected">Rechazadas</option>
+              <option value="sent">Enviados</option>
+              <option value="signed">Firmados</option>
+              <option value="cancelled">Cancelados</option>
             </select>
           </div>
         </div>
@@ -213,45 +200,46 @@ export default async function DashboardPage({
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--color-border)]">
-              {proposals.length === 0 ? (
+              {contracts.length === 0 ? (
                 <tr>
                   <td
                     colSpan={6}
                     className="px-6 py-12 text-center text-[var(--color-text-secondary)]">
-                    No hay propuestas encontradas.
+                    No hay contratos encontrados.
                   </td>
                 </tr>
               ) : (
-                proposals.map((proposal) => (
+                contracts.map((contract) => (
                   <tr
-                    key={proposal.id}
+                    key={contract.id}
                     className="hover:bg-[var(--color-surface-elevated)]/50 transition-colors group">
                     <td className="px-6 py-4 font-medium text-[var(--color-text-primary)]">
-                      {proposal.project_name}
+                      {contract.project_name}
                     </td>
                     <td className="px-6 py-4 text-[var(--color-text-secondary)]">
-                      {proposal.client_name}
+                      {contract.client_name}
                     </td>
                     <td className="px-6 py-4 font-medium text-[var(--color-text-primary)]">
-                      {formatter.format(proposal.total)}
+                      {formatter.format(contract.total)}
                     </td>
                     <td className="px-6 py-4">
-                      <StatusBadge status={proposal.status} />
+                      <StatusBadge status={contract.status} />
                     </td>
                     <td className="px-6 py-4 text-[var(--color-text-secondary)]">
-                      {proposal.created_at
+                      {contract.created_at
                         ? format(
-                            new Date(proposal.created_at),
+                            new Date(contract.created_at),
                             "dd MMM, yyyy",
                             { locale: es },
                           )
                         : "N/A"}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <ProposalRowActions
-                        proposalId={proposal.id}
-                        slug={proposal.slug}
-                        status={proposal.status}
+                      <ContractRowActions
+                        contractId={contract.id}
+                        proposalId={contract.proposal_id ?? null}
+                        slug={contract.slug}
+                        status={contract.status}
                       />
                     </td>
                   </tr>

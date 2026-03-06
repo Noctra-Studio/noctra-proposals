@@ -8,6 +8,7 @@ export interface WizardState {
   client_email: string;
   client_company: string;
   client_phone: string;
+  language: "en" | "es";
 
   // Step 2: Project
   project_name: string;
@@ -47,6 +48,7 @@ export const initialState: WizardState = {
   client_email: '',
   client_company: '',
   client_phone: '+52 ',
+  language: 'es',
   project_name: '',
   project_description: '',
   valid_until: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],

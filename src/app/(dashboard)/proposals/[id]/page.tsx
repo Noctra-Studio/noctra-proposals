@@ -280,7 +280,7 @@ export default async function ProposalDetailPage({
 
           <div className="bg-black text-white rounded-2xl p-6 shadow-lg">
             <h3 className="font-bold flex items-center gap-2 mb-4">
-              <Clock className="w-4 h-4 text-[#E8FF47]" />
+              <Clock className="w-4 h-4 text-white" />
               Resumen de Tiempos
             </h3>
             <div className="space-y-4">

@@ -1,5 +1,6 @@
-import { Hexagon, FileText, FileSignature } from "lucide-react";
+import { FileText, FileSignature } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { LogoutButton } from "@/components/ui/LogoutButton";
 
 export default function DashboardLayout({
@@ -12,13 +13,14 @@ export default function DashboardLayout({
       {/* Sidebar */}
       <aside className="w-64 border-r border-[var(--color-border)] bg-[var(--color-surface)] flex flex-col hidden md:flex">
         <div className="p-6 flex items-center gap-2">
-          <Hexagon
-            className="w-8 h-8 text-[var(--color-accent)]"
-            strokeWidth={1.5}
+          <Image
+            src="/noctra-logo-white.png"
+            alt="Noctra Studio"
+            width={120}
+            height={32}
+            className="object-contain"
+            priority
           />
-          <span className="text-xl font-semibold tracking-tight text-[var(--color-text-primary)]">
-            Noctra
-          </span>
         </div>
 
         <nav className="flex-1 px-4 py-4 space-y-1">
@@ -28,12 +30,12 @@ export default function DashboardLayout({
             <FileText className="w-5 h-5 text-[var(--color-accent)]" />
             <span className="font-medium text-sm">Propuestas</span>
           </Link>
-          {/* Future feature:
-           <Link href="/contracts" className="flex items-center gap-3 px-3 py-2 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-elevated)] transition-colors">
-              <FileSignature className="w-5 h-5" />
-              <span className="font-medium text-sm">Contratos</span>
-           </Link>
-           */}
+          <Link
+            href="/contracts"
+            className="flex items-center gap-3 px-3 py-2 rounded-md text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-elevated)] transition-colors">
+            <FileSignature className="w-5 h-5" />
+            <span className="font-medium text-sm">Contratos</span>
+          </Link>
         </nav>
 
         <div className="p-4 border-t border-[var(--color-border)]">

@@ -29,6 +29,7 @@ export interface Proposal {
   id: string; // UUID
   slug: string;
   status: ProposalStatus;
+  language?: "en" | "es";
 
   // Datos del cliente
   client_name: string;
@@ -75,6 +76,7 @@ export interface Contract {
   proposal_id?: string; // UUID references proposals
   slug: string;
   status: ContractStatus;
+  language?: "en" | "es";
 
   // Datos legales
   client_name: string;
@@ -100,6 +102,12 @@ export interface Contract {
   // Firma
   signed_at?: string; // TIMESTAMPTZ
   client_signed_name?: string;
+
+  // Condiciones de Cancelación
+  cancellation_fee?: number;
+  cancellation_terms?: string;
+  cancellation_client_name?: string;
+  cancellation_signed_at?: string; // TIMESTAMPTZ
 
   // Control
   sent_at?: string; // TIMESTAMPTZ
