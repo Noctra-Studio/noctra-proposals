@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Noctra Proposals & Contracts
 
-## Getting Started
+Gestor de propuestas y contratos para Noctra Studio.
 
-First, run the development server:
+## Variables de Entorno
+
+Crea un archivo `.env.local` (desarrollo) y configura las variables en Vercel (producción):
+
+| Variable                        | Descripción               | Dónde obtenerla                                      |
+| ------------------------------- | ------------------------- | ---------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | URL del proyecto Supabase | Supabase Dashboard > Project Settings > API          |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Key anónima pública       | Supabase Dashboard > Project Settings > API          |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Key de servicio (secreta) | Supabase Dashboard > Project Settings > API (secret) |
+| `RESEND_API_KEY`                | Key para envío de emails  | resend.com > API Keys                                |
+| `NEXT_PUBLIC_BASE_URL`          | URL base de la app        | `https://proposals.noctra.studio`                    |
+| `NOTIFICATION_EMAIL`            | Email de notificaciones   | `hello@noctra.studio`                                |
+
+## Comandos
 
 ```bash
+# Instalar dependencias
+npm install
+
+# Iniciar servidor de desarrollo
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Generar build de producción
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Despliegue en Vercel
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Conecta el repositorio a Vercel.
+2. Configura las variables de entorno en el panel de Vercel.
+3. En **Settings > Domains**, añade el dominio personalizado.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Configuración DNS
 
-## Learn More
+Añadir en el proveedor DNS de `noctra.studio`:
 
-To learn more about Next.js, take a look at the following resources:
+- **Tipo**: CNAME
+- **Nombre**: `proposals`
+- **Valor**: `cname.vercel-dns.com`
+- **TTL**: Auto
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Configuración de Supabase Auth
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+En **Supabase Dashboard > Authentication > URL Configuration**:
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Site URL**: `https://proposals.noctra.studio`
+- **Redirect URLs**: `https://proposals.noctra.studio/auth/callback`

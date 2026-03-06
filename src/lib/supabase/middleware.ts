@@ -31,13 +31,13 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Protect all dashboard routes (mostly everything except public routes & login)
-  // Public routes: /login, /p/* (public proposals), /c/* (public contracts), /auth/*, API routes
+  // Public routes that don't require authentication
   const isPublicRoute = 
-    request.nextUrl.pathname.startsWith('/login') ||
+    request.nextUrl.pathname === '/login' ||
     request.nextUrl.pathname.startsWith('/p/') ||
     request.nextUrl.pathname.startsWith('/c/') ||
-    request.nextUrl.pathname.startsWith('/api/') ||
+    request.nextUrl.pathname.match(/^\/api\/proposals\/[^/]+\/respond$/) ||
+    request.nextUrl.pathname.match(/^\/api\/contracts\/[^/]+\/sign$/) ||
     request.nextUrl.pathname.startsWith('/auth/');
 
   if (!user && !isPublicRoute) {
