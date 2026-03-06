@@ -143,7 +143,7 @@ export default async function DashboardPage({
         </div>
         <Link
           href="/proposals/new"
-          className="flex items-center gap-2 bg-[var(--color-accent)] text-black px-4 py-2.5 rounded-lg font-medium text-sm hover:bg-[#e5e5e5] transition-colors shadow-sm">
+          className="flex items-center gap-2 bg-[var(--color-accent)] text-[#0a0a0a] px-4 py-2.5 rounded-lg font-medium text-sm hover:bg-[#e5e5e5] transition-colors shadow-sm">
           <Plus className="w-5 h-5" />
           Nueva propuesta
         </Link>

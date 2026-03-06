@@ -833,7 +833,7 @@ export default function NewProposalWizard() {
                 <button
                   onClick={() => handleSave("sent")}
                   disabled={state.isSubmitting}
-                  className="flex items-center justify-center gap-2 py-3 px-4 bg-[var(--color-accent)] text-black rounded-lg hover:bg-[#e5e5e5] transition-colors font-medium shadow-sm disabled:opacity-50">
+                  className="flex items-center justify-center gap-2 py-3 px-4 bg-[var(--color-accent)] text-[#0a0a0a] rounded-lg hover:bg-[#e5e5e5] transition-colors font-medium shadow-sm disabled:opacity-50">
                   {state.isSubmitting ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
                   ) : (
@@ -861,7 +861,7 @@ export default function NewProposalWizard() {
         <button
           onClick={() => dispatch({ type: "NEXT_STEP" })}
           disabled={state.currentStep === 5 || !validateCurrentStep()}
-          className="flex items-center gap-2 px-6 py-2 rounded-lg font-medium text-sm text-black bg-[var(--color-accent)] hover:bg-[#e5e5e5] border border-transparent disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+          className="flex items-center gap-2 px-6 py-2 rounded-lg font-medium text-sm text-[#0a0a0a] bg-[var(--color-accent)] hover:bg-[#e5e5e5] border border-transparent disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
           Siguiente <ArrowRight className="w-4 h-4" />
         </button>
       </div>
