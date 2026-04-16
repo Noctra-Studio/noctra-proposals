@@ -100,7 +100,7 @@ export default function CancellationActions({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder={tContract.name_placeholder}
-                  className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-black outline-none font-medium transition-all"
+                  className="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-black outline-none font-medium transition-all text-black"
                 />
               </div>
 

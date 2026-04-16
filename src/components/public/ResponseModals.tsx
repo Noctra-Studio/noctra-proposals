@@ -52,7 +52,7 @@ export function AcceptModal({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Escribe tu nombre para confirmar"
-              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all text-black"
               required
             />
           </div>
@@ -131,7 +131,7 @@ export function FeedbackModal({
               onChange={(e) => setComments(e.target.value)}
               placeholder="Escribe tus comentarios aquí..."
               rows={4}
-              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all resize-none"
+              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all resize-none text-black"
               required
             />
             <p className="text-right text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-tighter">
