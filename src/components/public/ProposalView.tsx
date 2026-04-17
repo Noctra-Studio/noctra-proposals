@@ -1,7 +1,7 @@
 "use client";
 
 import { Proposal } from "@/types";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Check, Edit3, X, Download, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -19,7 +19,7 @@ export default function ProposalView({ proposal }: ProposalViewProps) {
     setIsExpired(
       proposal.status === "sent" &&
         Boolean(proposal.valid_until) &&
-        parseISO(proposal.valid_until!) < new Date(),
+        new Date(proposal.valid_until!) < new Date(),
     );
   }, [proposal.status, proposal.valid_until]);
 
@@ -52,7 +52,8 @@ export default function ProposalView({ proposal }: ProposalViewProps) {
 
   const formatDate = (dateStr?: string) => {
     if (!dateStr) return "-";
-    return format(parseISO(dateStr), "dd 'de' MMMM, yyyy", { locale: es });
+    const [year, month, day] = dateStr.substring(0, 10).split("-").map(Number);
+    return format(new Date(year, month - 1, day), "dd 'de' MMMM, yyyy", { locale: es });
   };
 
   const formatCurrency = (amount: number) => {
