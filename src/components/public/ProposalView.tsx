@@ -230,10 +230,10 @@ export default function ProposalView({ proposal }: ProposalViewProps) {
         <div className="space-y-6 max-w-md ml-auto">
           <div className="flex justify-between text-gray-400">
             <span>Subtotal</span>
-            <span>{formatCurrency(proposal.subtotal)}</span>
+            <span suppressHydrationWarning>{formatCurrency(proposal.subtotal)}</span>
           </div>
 
-          {proposal.discount_amount && proposal.discount_amount > 0 && (
+          {Boolean(proposal.discount_amount) && (proposal.discount_amount ?? 0) > 0 && (
             <>
               <div className="flex justify-between text-white">
                 <span>
@@ -243,11 +243,11 @@ export default function ProposalView({ proposal }: ProposalViewProps) {
                     : "Monto fijo"}
                   )
                 </span>
-                <span>-{formatCurrency(proposal.discount_amount)}</span>
+                <span suppressHydrationWarning>-{formatCurrency(proposal.discount_amount ?? 0)}</span>
               </div>
               <div className="flex justify-between text-gray-400">
                 <span>Subtotal con desc.</span>
-                <span>{formatCurrency(proposal.subtotal_after_discount)}</span>
+                <span suppressHydrationWarning>{formatCurrency(proposal.subtotal_after_discount)}</span>
               </div>
             </>
           )}
@@ -255,13 +255,13 @@ export default function ProposalView({ proposal }: ProposalViewProps) {
           {proposal.iva_amount > 0 && (
             <div className="flex justify-between text-gray-400 border-b border-white/10 pb-6">
               <span>IVA ({proposal.iva_percentage}%)</span>
-              <span>+{formatCurrency(proposal.iva_amount)}</span>
+              <span suppressHydrationWarning>+{formatCurrency(proposal.iva_amount)}</span>
             </div>
           )}
 
           <div className="flex justify-between items-baseline pt-6">
             <span className="text-xl font-medium">TOTAL</span>
-            <span className="text-4xl md:text-5xl font-serif font-bold text-white">
+            <span suppressHydrationWarning className="text-4xl md:text-5xl font-serif font-bold text-white">
               {formatCurrency(proposal.total)}
             </span>
           </div>
