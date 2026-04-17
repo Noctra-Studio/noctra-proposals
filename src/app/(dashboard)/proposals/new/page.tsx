@@ -120,6 +120,15 @@ export default function NewProposalWizard() {
       }
 
       const { id } = await res.json();
+
+      // Auto-send email to client
+      const sendRes = await fetch(`/api/proposals/${id}/send`, {
+        method: "POST",
+      });
+      if (!sendRes.ok) {
+        console.error("Failed to send proposal email");
+      }
+
       router.push(`/proposals/${id}`);
       router.refresh();
     } catch (e: any) {
