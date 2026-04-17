@@ -83,7 +83,7 @@ export default async function ContractsPage({
 
   // Base query
   let query = supabase
-    .from("contracts")
+    .from('contracts')
     .select("*")
     .order("created_at", { ascending: false });
 
@@ -93,13 +93,13 @@ export default async function ContractsPage({
   }
 
   const { data: rawContracts, error } = await query;
-  const contracts = (rawContracts as Contract[]) || [];
+  const contracts = (rawContracts as unknown as Contract[]) || [];
 
   // Calculate statistics (fetch all to get accurate stats regardless of filter)
   const { data: allContractsRaw } = await supabase
-    .from("contracts")
+    .from('contracts')
     .select("*");
-  const allContracts = (allContractsRaw as Contract[]) || [];
+  const allContracts = (allContractsRaw as unknown as Contract[]) || [];
 
   const totalCount = allContracts.length;
 

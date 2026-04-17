@@ -12,8 +12,7 @@ export async function POST(
     const supabase = createAdminClient();
 
     // 1. Get contract data
-    const { data: contract, error: fetchError } = await supabase
-      .from("contracts")
+    const { data: contract, error: fetchError } = await (supabase as any).from('contracts')
       .select("*")
       .eq("id", id)
       .single();
@@ -40,8 +39,7 @@ export async function POST(
     }
 
     // 3. Update contract status
-    const { error: updateError } = await supabase
-      .from("contracts")
+    const { error: updateError } = await (supabase as any).from('contracts')
       .update({
         status: "sent",
         sent_at: new Date().toISOString(),

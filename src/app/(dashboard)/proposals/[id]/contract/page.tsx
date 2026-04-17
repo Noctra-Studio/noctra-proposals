@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import ContractForm from "./ContractForm";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { Proposal } from "@/types";
 
 async function getProposal(id: string) {
   const supabase = createAdminClient();
@@ -13,7 +14,7 @@ async function getProposal(id: string) {
     .single();
 
   if (error || !data) return null;
-  return data;
+  return data as unknown as Proposal;
 }
 
 export default async function NewContractPage({

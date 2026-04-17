@@ -14,7 +14,7 @@ import { legalTexts } from "@/lib/legal-texts";
 async function getContractBySlug(slug: string) {
   const supabase = createAdminClient();
   const { data, error } = await supabase
-    .from("contracts")
+    .from('contracts')
     .select("*")
     .eq("slug", slug)
     .single();
@@ -83,7 +83,7 @@ export default async function PublicCancellationPage({
               <div className="text-right text-xs text-gray-400 font-bold uppercase tracking-widest">
                 {tContract.contract_number.replace(
                   "{slug}",
-                  contract.slug.split("-").pop()?.toUpperCase() || "",
+                  (contract.slug ?? "").split("-").pop()?.toUpperCase() || "",
                 )}
               </div>
             </div>
@@ -130,10 +130,10 @@ export default async function PublicCancellationPage({
               </h2>
               <p>
                 {t.sections.agreement.content
-                  .replace("{project_name}", contract.project_name)
+                  .replace("{project_name}", contract.project_name ?? "")
                   .replace(
                     "{slug}",
-                    contract.slug.split("-").pop()?.toUpperCase() || "",
+                    (contract.slug ?? "").split("-").pop()?.toUpperCase() || "",
                   )}
               </p>
             </section>

@@ -24,7 +24,7 @@ export async function POST(
     const supabase = createAdminClient();
 
     // 1. Update proposal status and response data
-    const { data: proposal, error: updateError } = await supabase
+    const { data: proposal, error: updateError } = await (supabase as any)
       .from("proposals")
       .update({
         status: response,
@@ -46,7 +46,8 @@ export async function POST(
       rejected: "Rechazada",
     };
 
-    const { error: historyError } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error: historyError } = await (supabase as any)
       .from("proposal_history")
       .insert({
         proposal_id: id,
@@ -67,28 +68,28 @@ export async function POST(
       to: ["hello@noctra.studio"],
       subject: `${
         response === "accepted" ? "✅" : response === "rejected" ? "❌" : "📝"
-      } ${statusLabels[response]} — ${proposal.project_name}`,
+      } ${statusLabels[response]} — ${proposal.project_name ?? ""}`,
       react: ProposalResponseNotificationEmail({
-        clientName: proposal.client_name,
-        projectName: proposal.project_name,
-        status: response as any,
-        total: formatter.format(proposal.total),
+        clientName: proposal.client_name ?? "",
+        projectName: proposal.project_name ?? "",
+        status: response as "accepted" | "changes_requested" | "rejected",
+        total: formatter.format(proposal.total ?? 0),
         comments: comments,
         proposalId: id,
-        clientPhone: proposal.client_phone,
+        clientPhone: proposal.client_phone ?? undefined,
         respondedAt: format(new Date(), "dd/MM/yyyy HH:mm", { locale: es }),
       }),
     });
 
-    // 4. If accepted, send Contract email to client (Placeholder for Prompt 8/9 integration)
-    if (response === "accepted") {
+    // 4. If accepted, send Contract email to client
+    if (response === "accepted" && proposal.client_email && proposal.slug) {
       await resend.emails.send({
         from: "Noctra Studio <hello@noctra.studio>",
         to: [proposal.client_email],
-        subject: `Contrato de servicios: ${proposal.project_name} | Noctra Studio`,
+        subject: `Contrato de servicios: ${proposal.project_name ?? ""} | Noctra Studio`,
         react: ContractSentEmail({
-          clientName: proposal.client_name,
-          projectName: proposal.project_name,
+          clientName: proposal.client_name ?? "",
+          projectName: proposal.project_name ?? "",
           slug: proposal.slug,
         }),
       });

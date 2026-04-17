@@ -15,8 +15,7 @@ export async function POST(
 
     const supabaseAdmin = createAdminClient();
 
-    const { error: updateError } = await supabaseAdmin
-      .from('contracts')
+    const { error: updateError } = await ((supabaseAdmin as any).from('contracts') as any)
       .update({
         cancellation_client_name: client_signed_name,
         cancellation_signed_at: new Date().toISOString()

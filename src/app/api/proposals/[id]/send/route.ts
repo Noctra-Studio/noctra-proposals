@@ -27,13 +27,13 @@ export async function POST(
     // 2. Send email via Resend
     const { error: mailError } = await resend.emails.send({
       from: "Noctra Studio <hello@noctra.studio>",
-      to: [proposal.client_email],
+      to: [proposal.client_email!],
       subject: `Propuesta comercial: ${proposal.project_name} | Noctra Studio`,
       react: ProposalSentEmail({
-        clientName: proposal.client_name,
-        projectName: proposal.project_name,
-        slug: proposal.slug,
-        validUntil: proposal.valid_until 
+        clientName: proposal.client_name ?? "",
+        projectName: proposal.project_name ?? "",
+        slug: proposal.slug ?? "",
+        validUntil: proposal.valid_until
           ? format(new Date(proposal.valid_until), "dd 'de' MMMM, yyyy", { locale: es })
           : "-",
       }),
@@ -59,7 +59,7 @@ export async function POST(
     await supabase.from("proposal_history").insert({
       proposal_id: id,
       action: "Propuesta enviada",
-      details: `Propuesta enviada a ${proposal.client_email}`,
+      description: `Propuesta enviada a ${proposal.client_email}`,
     });
 
     return NextResponse.json({ success: true });

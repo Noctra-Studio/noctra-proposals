@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import ProposalView from "@/components/public/ProposalView";
+import type { Proposal } from "@/types";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -42,5 +43,5 @@ export default async function PublicProposalPage({ params }: Props) {
     notFound();
   }
 
-  return <ProposalView proposal={proposal} />;
+  return <ProposalView proposal={proposal as unknown as Proposal} />;
 }

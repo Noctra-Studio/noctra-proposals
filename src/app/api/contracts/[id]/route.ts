@@ -9,8 +9,7 @@ export async function GET(
     const { id } = await params;
     const supabaseAdmin = createAdminClient();
 
-    const { data: contract, error } = await supabaseAdmin
-      .from('contracts')
+    const { data: contract, error } = await (supabaseAdmin as any).from('contracts')
       .select('*')
       .eq('id', id)
       .single();

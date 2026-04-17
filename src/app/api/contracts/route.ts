@@ -25,8 +25,7 @@ export async function POST(req: Request) {
     const slug = generateSlug(project_name, 'cont');
 
     // 2. Insert Contract
-    const { data: contract, error: contractError } = await supabaseAdmin
-      .from('contracts')
+    const { data: contract, error: contractError } = await (supabaseAdmin as any).from('contracts')
       .insert([{
         ...contractData,
         proposal_id,

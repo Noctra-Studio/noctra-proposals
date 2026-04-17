@@ -99,13 +99,13 @@ export default async function DashboardPage({
   }
 
   const { data: rawProposals, error } = await query;
-  const proposals = (rawProposals as Proposal[]) || [];
+  const proposals = (rawProposals as unknown as Proposal[]) || [];
 
   // Calculate statistics (fetch all to get accurate stats regardless of filter)
   const { data: allProposalsRaw } = await supabase
     .from("proposals")
     .select("*");
-  const allProposals = (allProposalsRaw as Proposal[]) || [];
+  const allProposals = (allProposalsRaw as unknown as Proposal[]) || [];
 
   const totalCount = allProposals.length;
 

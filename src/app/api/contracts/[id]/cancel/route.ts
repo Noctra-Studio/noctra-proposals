@@ -23,11 +23,10 @@ export async function POST(
     const supabaseAdmin = createAdminClient();
 
     // Verify contract exists and is not already cancelled
-    const { data: contract, error: fetchError } = await supabaseAdmin
-      .from('contracts')
-      .select('id, status, proposal_id')
+    const { data: contract, error: fetchError } = await ((supabaseAdmin as any).from('contracts') as any)
+      .select('*')
       .eq('id', id)
-      .single();
+      .single() as any;
 
     if (fetchError || !contract) {
       return NextResponse.json({ error: 'Contrato no encontrado' }, { status: 404 });
@@ -38,8 +37,7 @@ export async function POST(
     }
 
     // Update contract status and save cancellation details
-    const { error: updateError } = await supabaseAdmin
-      .from('contracts')
+    const { error: updateError } = await ((supabaseAdmin as any).from('contracts') as any)
       .update({ 
         status: 'cancelled',
         cancellation_fee,
@@ -55,8 +53,8 @@ export async function POST(
 
     // Optional: Log the action in proposal history if possible
     if (contract.proposal_id) {
-      await supabaseAdmin
-        .from('proposal_history')
+      await (supabaseAdmin
+        .from('proposal_history') as any)
         .insert({
           proposal_id: contract.proposal_id,
           action: 'contract_cancelled',

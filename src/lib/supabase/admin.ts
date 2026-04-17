@@ -1,20 +1,14 @@
-import { NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+import type { Database } from '@/types/supabase-generated.types'
 
-// This creates an admin client that bypasses RLS rules
 export function createAdminClient() {
-  return createServerClient(
+  return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     {
       cookies: {
-        getAll() {
-          return []
-        },
-        setAll() {
-          // Do nothing
-        },
+        getAll() { return [] },
+        setAll() {},
       },
     }
   )

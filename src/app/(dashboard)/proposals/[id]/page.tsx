@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import Link from "next/link";
-import { ServiceItem } from "@/types";
+import { ServiceItem, Proposal, Contract, ProposalHistory } from "@/types";
 import {
   CheckCircle2,
   Clock,
@@ -28,18 +28,22 @@ async function getProposalData(id: string) {
   if (proposalError || !proposal) return null;
 
   const { data: history } = await supabase
-    .from("proposal_history")
+    .from("proposal_history" as any)
     .select("*")
     .eq("proposal_id", id)
     .order("created_at", { ascending: false });
 
   const { data: contract } = await supabase
-    .from("contracts")
+    .from('contracts')
     .select("*")
     .eq("proposal_id", id)
     .maybeSingle();
 
-  return { proposal, history, contract };
+  return {
+    proposal: proposal as unknown as Proposal,
+    history: history as unknown as ProposalHistory[],
+    contract: contract ? (contract as unknown as Contract) : null,
+  };
 }
 
 export default async function ProposalDetailPage({
@@ -230,7 +234,7 @@ export default async function ProposalDetailPage({
                   <span>Subtotal</span>
                   <span>{formatCurrency(proposal.subtotal)}</span>
                 </div>
-                {proposal.discount_amount > 0 && (
+                {proposal.discount_amount !== undefined && proposal.discount_amount > 0 && (
                   <div className="flex justify-between text-sm text-green-600">
                     <span>Descuento</span>
                     <span>-{formatCurrency(proposal.discount_amount)}</span>

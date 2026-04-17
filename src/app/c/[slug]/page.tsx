@@ -16,7 +16,7 @@ import { legalTexts } from "@/lib/legal-texts";
 async function getContractBySlug(slug: string) {
   const supabase = createAdminClient();
   const { data, error } = await supabase
-    .from("contracts")
+    .from('contracts')
     .select("*")
     .eq("slug", slug)
     .single();
@@ -60,11 +60,11 @@ export default async function PublicContractPage({
               <h3 className="font-bold text-green-900">{t.signed_success}</h3>
               <p className="text-green-700 text-sm">
                 {t.signed_by_info
-                  .replace("{name}", contract.client_signed_name)
+                  .replace("{name}", contract.client_signed_name ?? "")
                   .replace(
                     "{date}",
                     format(
-                      new Date(contract.signed_at),
+                      new Date(contract.signed_at!),
                       "dd 'de' MMMM, yyyy 'a las' HH:mm",
                       { locale: dateLocale },
                     ),
@@ -83,7 +83,7 @@ export default async function PublicContractPage({
               <div className="text-right text-xs text-gray-400 font-bold uppercase tracking-widest">
                 {t.contract_number.replace(
                   "{slug}",
-                  contract.slug.split("-").pop()?.toUpperCase() || "",
+                  (contract.slug ?? "").split("-").pop()?.toUpperCase() || "",
                 )}
               </div>
             </div>
@@ -132,11 +132,11 @@ export default async function PublicContractPage({
               <p>
                 {t.sections.project.content.replace(
                   "{project_name}",
-                  contract.project_name,
+                  contract.project_name ?? "",
                 )}
               </p>
               <div className="bg-gray-50 rounded-2xl p-8 space-y-6 not-prose mt-8">
-                {contract.services.map((service: any, i: number) => (
+                {(contract.services as any[])?.map((service: any, i: number) => (
                   <div
                     key={i}
                     className="flex justify-between gap-4 border-b border-gray-200/50 pb-4 last:border-0 last:pb-0">
@@ -160,11 +160,11 @@ export default async function PublicContractPage({
               <p>
                 {t.sections.financial.content.replace(
                   "{total}",
-                  formatCurrency(contract.total),
+                  formatCurrency(contract.total ?? 0),
                 )}
               </p>
               <div className="mt-8 space-y-3 not-prose">
-                {contract.payment_schedule.map((p: any, i: number) => (
+                {(contract.payment_schedule as any[])?.map((p: any, i: number) => (
                   <div
                     key={i}
                     className="flex justify-between items-center p-4 rounded-xl border border-gray-100 bg-white">
@@ -189,7 +189,7 @@ export default async function PublicContractPage({
               <p>
                 {t.sections.timeline.content.replace(
                   "{total_weeks}",
-                  contract.total_weeks.toString(),
+                  (contract.total_weeks ?? 0).toString(),
                 )}
               </p>
               <div className="grid md:grid-cols-2 gap-4 not-prose mt-8">
@@ -199,7 +199,7 @@ export default async function PublicContractPage({
                   </p>
                   <p className="text-2xl font-serif text-white">
                     {format(
-                      new Date(contract.start_date),
+                      new Date(contract.start_date!),
                       "dd 'de' MMMM, yyyy",
                       { locale: dateLocale },
                     )}
@@ -211,7 +211,7 @@ export default async function PublicContractPage({
                   </p>
                   <p className="text-2xl font-serif text-black">
                     {format(
-                      new Date(contract.estimated_end_date),
+                      new Date(contract.estimated_end_date!),
                       "dd 'de' MMMM, yyyy",
                       { locale: dateLocale },
                     )}

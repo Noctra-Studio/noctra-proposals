@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { ProposalPDF } from "@/lib/pdf-generator";
+import type { Proposal } from "@/types";
 import React from "react";
 
 export async function GET(
@@ -27,7 +28,7 @@ export async function GET(
     }
 
     // 2. Generate PDF Buffer
-    const buffer = await renderToBuffer(<ProposalPDF proposal={proposal} />);
+    const buffer = await renderToBuffer(<ProposalPDF proposal={proposal as unknown as Proposal} />);
 
     // 3. Return as PDF stream
     return new NextResponse(new Uint8Array(buffer), {
