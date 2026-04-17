@@ -10,8 +10,9 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
+
   try {
-    const { id } = await params;
     const { response, comments } = await request.json();
 
     if (!id || !response) {
@@ -23,7 +24,7 @@ export async function POST(
 
     const supabase = createAdminClient();
 
-    // 1. Update proposal status and response data
+    // 1. Update proposal status — this is critical
     const { data: proposal, error: updateError } = await (supabase as any)
       .from("proposals")
       .update({
@@ -36,62 +37,68 @@ export async function POST(
       .select()
       .single();
 
-    if (updateError) throw updateError;
+    if (updateError) {
+      console.error("DB update error:", updateError);
+      return NextResponse.json({ error: updateError.message }, { status: 500 });
+    }
 
-    // 2. Log to history
+    // 2. Log to history — non-critical
     const statusLabels: Record<string, string> = {
       accepted: "Aceptada",
       changes_requested: "Cambios solicitados",
       rejected: "Rechazada",
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { error: historyError } = await (supabase as any)
+    (supabase as any)
       .from("proposal_history")
       .insert({
         proposal_id: id,
         action: `Propuesta ${statusLabels[response] || response}`,
-        details: comments ? `Comentarios: ${comments}` : "Sin comentarios adicionales",
+        description: comments ? `Comentarios: ${comments}` : null,
+      })
+      .then(({ error }: any) => {
+        if (error) console.error("History log error:", error);
       });
 
-    if (historyError) console.error("History log error:", historyError);
-
-    // 3. Send email notification to hello@noctra.studio
+    // 3. Send emails — non-critical, don't block the response
     const formatter = new Intl.NumberFormat("es-MX", {
       style: "currency",
       currency: "MXN",
     });
 
-    await resend.emails.send({
-      from: "Noctra Notifications <hello@noctra.studio>",
-      to: ["hello@noctra.studio"],
-      subject: `${
-        response === "accepted" ? "✅" : response === "rejected" ? "❌" : "📝"
-      } ${statusLabels[response]} — ${proposal.project_name ?? ""}`,
-      react: ProposalResponseNotificationEmail({
-        clientName: proposal.client_name ?? "",
-        projectName: proposal.project_name ?? "",
-        status: response as "accepted" | "changes_requested" | "rejected",
-        total: formatter.format(proposal.total ?? 0),
-        comments: comments,
-        proposalId: id,
-        clientPhone: proposal.client_phone ?? undefined,
-        respondedAt: format(new Date(), "dd/MM/yyyy HH:mm", { locale: es }),
-      }),
-    });
-
-    // 4. If accepted, send Contract email to client
-    if (response === "accepted" && proposal.client_email && proposal.slug) {
-      await resend.emails.send({
-        from: "Noctra Studio <hello@noctra.studio>",
-        to: [proposal.client_email],
-        subject: `Contrato de servicios: ${proposal.project_name ?? ""} | Noctra Studio`,
-        react: ContractSentEmail({
+    resend.emails
+      .send({
+        from: "Noctra Notifications <hello@noctra.studio>",
+        to: ["hello@noctra.studio"],
+        subject: `${
+          response === "accepted" ? "✅" : response === "rejected" ? "❌" : "📝"
+        } ${statusLabels[response]} — ${proposal.project_name ?? ""}`,
+        react: ProposalResponseNotificationEmail({
           clientName: proposal.client_name ?? "",
           projectName: proposal.project_name ?? "",
-          slug: proposal.slug,
+          status: response as "accepted" | "changes_requested" | "rejected",
+          total: formatter.format(proposal.total ?? 0),
+          comments: comments,
+          proposalId: id,
+          clientPhone: proposal.client_phone ?? undefined,
+          respondedAt: format(new Date(), "dd/MM/yyyy HH:mm", { locale: es }),
         }),
-      });
+      })
+      .catch((err: any) => console.error("Notification email error:", err));
+
+    if (response === "accepted" && proposal.client_email && proposal.slug) {
+      resend.emails
+        .send({
+          from: "Noctra Studio <hello@noctra.studio>",
+          to: [proposal.client_email],
+          subject: `Contrato de servicios: ${proposal.project_name ?? ""} | Noctra Studio`,
+          react: ContractSentEmail({
+            clientName: proposal.client_name ?? "",
+            projectName: proposal.project_name ?? "",
+            slug: proposal.slug,
+          }),
+        })
+        .catch((err: any) => console.error("Contract email error:", err));
     }
 
     return NextResponse.json({ success: true, proposal });
