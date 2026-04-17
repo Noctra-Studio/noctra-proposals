@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Loader2 } from "lucide-react";
 
 interface ModalProps {
@@ -20,18 +20,26 @@ export function AcceptModal({
 
   if (!isOpen) return null;
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div
         className="bg-white rounded-[2rem] p-8 md:p-12 max-w-lg w-full shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-4 duration-300"
         onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-start mb-8">
-          <h2 className="font-serif text-3xl font-medium leading-tight">
+          <h2 className="font-serif text-3xl font-medium leading-tight text-black">
             ¡Perfecto! Vamos a trabajar juntos 🎉
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-black">
             <X className="w-6 h-6" />
           </button>
         </div>
@@ -84,6 +92,14 @@ export function FeedbackModal({
 
   if (!isOpen) return null;
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   const config = {
     changes_requested: {
       title: "Cuéntanos qué necesitas ajustar",
@@ -109,12 +125,12 @@ export function FeedbackModal({
         className="bg-white rounded-[2rem] p-8 md:p-12 max-w-lg w-full shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-4 duration-300"
         onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-start mb-8">
-          <h2 className="font-serif text-3xl font-medium leading-tight">
+          <h2 className="font-serif text-3xl font-medium leading-tight text-black">
             {config.title}
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-black">
             <X className="w-6 h-6" />
           </button>
         </div>
