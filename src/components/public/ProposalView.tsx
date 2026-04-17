@@ -1,10 +1,10 @@
 "use client";
 
 import { Proposal } from "@/types";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import { Check, Edit3, X, Download, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProposalActions from "@/components/public/ProposalActions";
 
 interface ProposalViewProps {
@@ -13,11 +13,15 @@ interface ProposalViewProps {
 
 export default function ProposalView({ proposal }: ProposalViewProps) {
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isExpired, setIsExpired] = useState(false);
 
-  const isExpired =
-    proposal.status === "sent" &&
-    proposal.valid_until &&
-    new Date(proposal.valid_until) < new Date();
+  useEffect(() => {
+    setIsExpired(
+      proposal.status === "sent" &&
+        Boolean(proposal.valid_until) &&
+        parseISO(proposal.valid_until!) < new Date(),
+    );
+  }, [proposal.status, proposal.valid_until]);
 
   const isResponded = ["accepted", "changes_requested", "rejected"].includes(
     proposal.status,
@@ -48,7 +52,7 @@ export default function ProposalView({ proposal }: ProposalViewProps) {
 
   const formatDate = (dateStr?: string) => {
     if (!dateStr) return "-";
-    return format(new Date(dateStr), "dd 'de' MMMM, yyyy", { locale: es });
+    return format(parseISO(dateStr), "dd 'de' MMMM, yyyy", { locale: es });
   };
 
   const formatCurrency = (amount: number) => {
