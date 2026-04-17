@@ -12,7 +12,7 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
-    const { response, comments, client_signed_name } = await request.json();
+    const { response, comments } = await request.json();
 
     if (!id || !response) {
       return NextResponse.json(
@@ -30,7 +30,6 @@ export async function POST(
         status: response,
         client_response: response,
         client_comments: comments || null,
-        client_signed_name: client_signed_name || null,
         client_responded_at: new Date().toISOString(),
       })
       .eq("id", id)
